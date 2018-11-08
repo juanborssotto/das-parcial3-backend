@@ -79,7 +79,7 @@ public class ReclamosResource {
 		Integer resp_respuesta;
 
 		try {
-			nro_reclamo = Integer.valueOf(jobj.get("nro_respuesta").toString());
+			nro_reclamo = Integer.valueOf(jobj.get("nro_reclamo").toString());
 			respuesta = jobj.get("respuesta").toString();
 			resp_respuesta = Integer.valueOf(jobj.get("resp_respuesta").toString());
 			// System.out.println(nro_reclamo + ", " + respuesta + ", " + resp_respuesta);
