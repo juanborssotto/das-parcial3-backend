@@ -100,5 +100,5 @@ public class ReclamoBean {
 	public void setReclamo(String reclamo) {
 		this.reclamo = reclamo;
 	}
-	
+
 }
