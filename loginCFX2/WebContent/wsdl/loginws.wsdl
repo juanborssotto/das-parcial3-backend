@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="LoginWSService" targetNamespace="http://ws.das.ubp.edu.ar/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.das.ubp.edu.ar/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://ws.das.ubp.edu.ar/" version="1.0" xmlns:tns="http://ws.das.ubp.edu.ar/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="getUsuario" type="tns:getUsuario"/>
+
+  <xs:element name="getUsuarioResponse" type="tns:getUsuarioResponse"/>
+
+  <xs:complexType name="getUsuario">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getUsuarioResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:usuarioBean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="usuarioBean">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="apellido" type="xs:string"/>
+      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+      <xs:element minOccurs="0" name="nroDocumento" type="xs:string"/>
+      <xs:element name="nroPersona" type="xs:int"/>
+      <xs:element minOccurs="0" name="tipoDocumento" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getUsuarioResponse">
+    <wsdl:part name="parameters" element="tns:getUsuarioResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getUsuario">
+    <wsdl:part name="parameters" element="tns:getUsuario">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="LoginWS">
+    <wsdl:operation name="getUsuario">
+      <wsdl:input name="getUsuario" message="tns:getUsuario">
+    </wsdl:input>
+      <wsdl:output name="getUsuarioResponse" message="tns:getUsuarioResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LoginWSServiceSoapBinding" type="tns:LoginWS">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getUsuario">
+      <soap12:operation soapAction="urn:GetUsuario" style="document"/>
+      <wsdl:input name="getUsuario">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getUsuarioResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LoginWSService">
+    <wsdl:port name="LoginWSPort" binding="tns:LoginWSServiceSoapBinding">
+      <soap12:address location="http://localhost:8080/loginCFX2/services/LoginWSPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
