@@ -15,16 +15,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.ws.WebServiceException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import ar.edu.ubp.das.beans.ReclamoBean;
 import ar.edu.ubp.das.config.Config;
-import ar.edu.ubp.das.ws.LoginWS;
-import ar.edu.ubp.das.ws.LoginWSService;
-import ar.edu.ubp.das.ws.UsuarioBean;
 
 @Path("/reclamos")
 @Produces(MediaType.APPLICATION_JSON)
@@ -75,10 +71,9 @@ public class ReclamosResource {
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateReclamo(Object body) throws SQLException {
-
+	public Response updateReclamo(Object body) throws SQLException {		
 		JsonObject jobj = new Gson().fromJson(body.toString(), JsonObject.class);
-
+		
 		Integer nro_reclamo;
 		String respuesta;
 		Integer resp_respuesta;
@@ -109,7 +104,7 @@ public class ReclamosResource {
 			st.setInt(1, nro_reclamo);
 			st.setString(2, respuesta);
 			st.setInt(3, resp_respuesta);
-			st.execute();
+			st.execute();			
 			conn.commit();
 
 			return Response.status(Response.Status.OK).build();
@@ -121,29 +116,6 @@ public class ReclamosResource {
 		} finally {
 			conn.close();
 		}
-	}
+	}	
 	
-	@Path("/login")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getUsuario(Object body) {		
-		JsonObject jobj = new Gson().fromJson(body.toString(), JsonObject.class);
-		
-		String usuario, clave;		
-		try {
-			usuario = jobj.get("usuario").toString();
-			clave = jobj.get("clave").toString();
-		}catch (NullPointerException ex){
-			return Response.status(Response.Status.BAD_REQUEST).entity("Body incorrecto").build();
-		}
-		
-		LoginWSService service = new LoginWSService();
-		LoginWS login = service.getLoginWSPort();
-		try {
-			UsuarioBean usr = login.getUsuario(usuario, clave);
-			return Response.status(Response.Status.OK).entity(usr).build();
-		}catch(WebServiceException e) {			
-			return Response.status(Response.Status.UNAUTHORIZED).entity("{\"error\":\"Password o usuario incorrectos\"}").type("application/json").build();
-		}
-	}
 }
