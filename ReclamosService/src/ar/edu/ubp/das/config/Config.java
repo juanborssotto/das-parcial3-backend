@@ -7,7 +7,7 @@ public class Config {
 
 	private Config() {
 		dbUser = "SA";
-		dbPass = "Asdf1234";
+		dbPass = "Changeme13";
 	}
 
 	public static Config getInstance() {
