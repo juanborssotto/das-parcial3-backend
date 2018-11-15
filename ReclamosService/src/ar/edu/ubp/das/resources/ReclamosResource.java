@@ -58,6 +58,7 @@ public class ReclamosResource {
 				reclamo.setContactar(result.getString("contactar"));
 				reclamo.setLocalidad(result.getString("localidad"));
 				reclamo.setReclamo(result.getString("reclamo"));
+				reclamo.setNroReclamo(result.getInt("nro_reclamo"));
 				reclamos.add(reclamo);
 
 			}

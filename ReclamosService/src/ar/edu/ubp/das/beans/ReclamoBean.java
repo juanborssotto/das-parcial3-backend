@@ -12,6 +12,15 @@ public class ReclamoBean {
 	private String contactar;
 	private String localidad;
 	private String reclamo;
+	private Integer nroReclamo;
+
+	public Integer getNroReclamo() {
+		return nroReclamo;
+	}
+
+	public void setNroReclamo(Integer nroReclamo) {
+		this.nroReclamo = nroReclamo;
+	}
 
 	public String getFechaHora() {
 		return fechaHora;
