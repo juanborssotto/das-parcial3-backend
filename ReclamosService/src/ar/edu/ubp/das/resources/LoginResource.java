@@ -18,24 +18,25 @@ import ar.edu.ubp.das.ws.UsuarioBean;
 @Consumes(MediaType.APPLICATION_JSON)
 public class LoginResource {
 	@POST
-	public Response getUsuario(Object body) {		
-		JsonObject jobj = new Gson().fromJson(body.toString(), JsonObject.class);
-		
-		String usuario, clave;		
+	public Response getUsuario(Object body) {
+
+		String usuario, clave;
 		try {
+			JsonObject jobj = new Gson().fromJson(body.toString(), JsonObject.class);
 			usuario = jobj.get("usuario").toString();
 			clave = jobj.get("clave").toString();
-		}catch (NullPointerException ex){
+		} catch (Exception ex) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("Body incorrecto").build();
 		}
-		
+
 		LoginWSService service = new LoginWSService();
 		LoginWS login = service.getLoginWSPort();
 		try {
 			UsuarioBean usr = login.getUsuario(usuario, clave);
 			return Response.status(Response.Status.OK).entity(usr).build();
-		}catch(WebServiceException e) {			
-			return Response.status(Response.Status.UNAUTHORIZED).entity("{\"error\":\"Password o usuario incorrectos\"}").type("application/json").build();
+		} catch (WebServiceException e) {
+			return Response.status(Response.Status.UNAUTHORIZED)
+					.entity("{\"error\":\"Password o usuario incorrectos\"}").type("application/json").build();
 		}
 	}
 }
