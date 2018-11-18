@@ -35,8 +35,8 @@ public class LoginResource {
 			UsuarioBean usr = login.getUsuario(usuario, clave);
 			return Response.status(Response.Status.OK).entity(usr).build();
 		} catch (WebServiceException e) {
-			return Response.status(Response.Status.UNAUTHORIZED)
-					.entity("{\"error\":\"Password o usuario incorrectos\"}").type("application/json").build();
+			return Response.status(Response.Status.UNAUTHORIZED).entity("Password o usuario incorrectos")
+					.type("application/json").build();
 		}
 	}
 }

@@ -17,7 +17,6 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 
 import ar.edu.ubp.das.beans.ReclamoBean;
 import ar.edu.ubp.das.config.Config;
@@ -30,6 +29,7 @@ public class ReclamosResource {
 
 	@GET
 	public Response getReclamos() {
+
 		System.out.println("getReclamos");
 		LinkedList<ReclamoBean> reclamos = new LinkedList();
 		try {
@@ -70,15 +70,16 @@ public class ReclamosResource {
 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error interno del servidor").build();
 		}
+
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateReclamo(String body) throws SQLException {
 
-		Integer nro_reclamo;
-		String respuesta;
-		Integer resp_respuesta;
+		Integer nro_reclamo = null;
+		String respuesta = null;
+		Integer resp_respuesta = null;
 
 		try {
 			JsonObject jobj = new Gson().fromJson(body.toString(), JsonObject.class);
@@ -98,40 +99,40 @@ public class ReclamosResource {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
 			conn = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=das",
 					Config.getInstance().getDbUser(), Config.getInstance().getDbPass());
-
 			conn.setAutoCommit(false);
 
-			st = conn.prepareCall("{CALL dbo.act_respuesta_reclamo(?,?,?)}");
+			try {
 
-			st.setInt(1, nro_reclamo);
-			st.setString(2, respuesta);
-			st.setInt(3, resp_respuesta);
+				st = conn.prepareCall("{CALL dbo.act_respuesta_reclamo(?,?,?)}");
 
-			int result = st.executeUpdate();
+				st.setInt(1, nro_reclamo);
+				st.setString(2, respuesta);
+				st.setInt(3, resp_respuesta);
 
-			if (result < 1) {
-				return Response.status(Response.Status.BAD_REQUEST).entity("nro reclamo mal").build();
+				int result = st.executeUpdate();
+
+				if (result < 1) {
+					return Response.status(Response.Status.BAD_REQUEST).entity("El nro reclamo esta mal").build();
+				}
+
+				conn.commit();
+				st.close();
+
+				return Response.status(Response.Status.OK).build();
+
+			} catch (SQLException ex) {
+				conn.rollback();
+				ex.printStackTrace();
+				throw new SQLException("Error al actualizar los datos");
+
+			} finally {
+				conn.setAutoCommit(true);
+				conn.close();
 			}
 
-			conn.commit();
-
-			return Response.status(Response.Status.OK).build();
-
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
-			conn.rollback();
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException ex) {
 			ex.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error interno del servidor").build();
-
-		} catch (SQLServerException ex) {
-			ex.printStackTrace();
-			if (ex.getErrorCode() == CONSTRAINT_ERROR) {
-				return Response.status(Response.Status.BAD_REQUEST).entity("Constraint").build();
-			}
-
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error interno del servidor").build();
-
-		} finally {
-			conn.close();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
 		}
 	}
 
