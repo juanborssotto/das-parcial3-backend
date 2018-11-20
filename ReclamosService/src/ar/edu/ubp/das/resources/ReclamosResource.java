@@ -77,15 +77,15 @@ public class ReclamosResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateReclamo(String body) throws SQLException {
 
-		Integer nro_reclamo = null;
+		Integer nroReclamo = null;
 		String respuesta = null;
-		Integer resp_respuesta = null;
+		Integer respRespuesta = null;
 
 		try {
 			JsonObject jobj = new Gson().fromJson(body.toString(), JsonObject.class);
-			nro_reclamo = Integer.valueOf(jobj.get("nro_reclamo").toString());
+			nroReclamo = Integer.valueOf(jobj.get("nroReclamo").toString());
 			respuesta = jobj.get("respuesta").toString();
-			resp_respuesta = Integer.valueOf(jobj.get("resp_respuesta").toString());
+			respRespuesta = Integer.valueOf(jobj.get("respRespuesta").toString());
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -105,9 +105,9 @@ public class ReclamosResource {
 
 				st = conn.prepareCall("{CALL dbo.act_respuesta_reclamo(?,?,?)}");
 
-				st.setInt(1, nro_reclamo);
+				st.setInt(1, nroReclamo);
 				st.setString(2, respuesta);
-				st.setInt(3, resp_respuesta);
+				st.setInt(3, respRespuesta);
 
 				int result = st.executeUpdate();
 
